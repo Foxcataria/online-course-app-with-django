@@ -51,52 +51,49 @@
                 {% endfor %}
             </div>
             <!-- Task: show questions and choices -->
-            <!-- <HINT> Use Bootstrap Collapse to hide exam first, more details could be found here
-            https://www.w3schools.com/bootstrap4/bootstrap_collapse.asp-->
-
-            <!--
-
-            A collapse example here:
-            <div id="exam" class="collapse">
-                Click to expand elements within the collapse div
+            {% if user.is_authenticated %}
+                <!--
+                    Registered and logged in users have access to the exam.
+                -->
+                <button type="button" class="btn btn-info container-fluid" data-toggle="collapse" data-target="#exam">Click to show exam content</button>
+                <div id="exam" class="collapse">
+                    <form id="question-form" action="{% url 'onlinecourse:submit' course.id %}" method="post">
+                        <!-- <HINT> If user is authenticated, show course exam with a list of question -->
+                        <div class="card-columns-vertical">
+                        {% for question in course.question_set.all %}
+                            <div class="card mt-1">
+                                <div class="card-header"><h5>{{ question.question_text }}</h5></div>
+                                {% csrf_token %}
+                                <div class="card-body"> <!-- class="form-group" -->
+                                {% for choice in question.choice_set.all %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="choice_{{choice.id}}" value="{{choice.id}}" id="{{choice.id}}">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            {{ choice.choice_text }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                        </div>
+                        <input class="btn btn-success btn-block" type="submit" value="Submit">
+                    </form>
                 </div>
-
-            -->
-
-            <!-- <HINT> If user is authenticated, show course exam with a list of question -->
-
-            <!-- <HINT> Each example will have many questions -->
-
-            <!-- <HINT> Each question will have many choices -->
-
-
-            <!-- <HINT> Create a form to collect the selected choices for all questions -->
-            <!-- <HINT> For each question choice, you may create a checkbox input like
-            <input type="check" name="choice_{{choice.id}}" id="{{choice.id}}" ...>
-            -->
+            {% else %}
+                <!--
+                    Only registered and logged in users should have access to
+                    the exam.
+                -->
+                <button type="button" class="btn btn-info container-fluid" disabled>
+                    Only registered users can access the course exam
+                </button>
+            {% endif %}
 
             <!-- A choice submission form example
             <form id="questionform" action="point to a submit view" method="post">
-                        ... for each question in the course ...
-                        <div class="card mt-1">
-                            <div class="card-header"><h5>{{ question.question_text}}</h5></div>
-                            {% csrf_token %}
-                            <div class="form-group">
-                               ... for each choice in the question ...
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="checkbox" name="choice_{{choice.id}}"
-                                               class="form-check-input" id="{{choice.id}}"
-                                               value="{{choice.id}}">{{ choice.choice_text }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    <input class="btn btn-success btn-block" type="submit" value="Submit">
-            </form> -->
 
-            <!--Check here to see more details Bootstrap checkbox
-             https://www.w3schools.com/bootstrap4/bootstrap_forms_inputs.asp-->
+            </form> -->
     </div>
 </body>
 </html>
